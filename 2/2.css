@@ -150,6 +150,7 @@ body{
     font-weight: 400;
     padding: 5px;
     border-radius: 3px;
+    font-size: 18px;
 }
 .mainContent .input{
 	-webkit-font-smoothing: antialiased;
