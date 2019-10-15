@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>数据库显示</title>
+	</head>
+	<body>
+		
+		<table class="table table-striped pagination" id='table'">
+			<thead>
+				<tr>
+					<th>类型</th><th>时间</th><th>标题</th><th>内容</th>
+				</tr>
+
+			</thead>
+			<tbody>
+				{% for x in data %}
+				<tr>
+					<td><div style="width: 35px">{{x.type}}</div></td><td><div style="width: 100px">{{x.date}}</div></td><td><div style="width: 350px" title="{{x.title}}">{{x.title}}</div></td><td><div title="{{x.content}}">{{x.content}}</div></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</body>
+	<script type="text/javascript">
+		$(function(){
+			$("#table").bootstrapTable({
+        		pagination: true,
+       			pageSize: 10,
+        		pageNumber: 1,
+			});
+		})
+	</script>
+</html>

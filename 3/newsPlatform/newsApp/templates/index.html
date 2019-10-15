@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <link rel="stylesheet" 
+        href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    	<link rel="stylesheet" type="text/css" src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css"></link>
+    	<script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+		<style>
+		input[type="checkbox"],input[type="text"],input[type="date"],input[type="radio"],button+label::before{
+			margin-left: 3px;
+   			margin-right: 10px;
+			margin-top: 20px;
+		}
+        fieldset {
+            display: block;
+    		margin-inline-start: 2px;
+    		margin-inline-end: 2px;
+   			padding-block-start: 0.35em;
+    		padding-inline-start: 0.75em;
+    		padding-inline-end: 0.75em;
+    		padding-block-end: 0.625em;
+    		min-inline-size: min-content;
+    		border-width: 2px;
+    		border-style: groove;
+    		border-color: threedface;
+    		border-image: initial;
+    		width: 60%;
+        }
+        legend{
+            padding: .5em;
+            border: 0;
+            width: auto;
+        }
+        table{
+    		display: table;
+			table-layout:fixed;
+		}
+		div{
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 1;
+			overflow: hidden;
+		}
+    </style>
+	</head>
+	<body>
+		<img src="https://cdn.luogu.com.cn/upload/image_hosting/ibpduo97.png?x-oss-process=image/resize,m_lfit,h_170,w_225"><h style="margin-left:30px;font-size: 50px">ISE大学计算机学院资讯查询系统</h>
+		<form>
+			{% csrf_token %}
+			<fieldset>
+				
+				<legend>请输入用于筛选的数据：</legend>
+
+    			标题 <input type="text" value=""
+    			placeholder="留空返回全部结果" name="title" id="title"> <br>
+
+    			信息发布的起始日期
+				<input type="date" name="date" id="sdate">
+				终止日期
+				<input type="date" name="date" id="tdate"> <br>
+
+    			资讯类型----1&nbsp;学院通知 <input type="checkbox" checked="checked" name="type" value="1">
+    			2&nbsp;公示公告 <input type="checkbox" checked="checked" name="type" value="2">
+    			3&nbsp;学院新闻 <input type="checkbox" checked="checked" name="type" value="3">
+    			4&nbsp;学术讲座 <input type="checkbox" checked="checked" name="type" value="4"><br>
+
+    			时间降序<input type="radio" checked="checked" name="time" value="0">
+    			时间升序<input type="radio" name="time" value="1"> <br>
+
+    			<button type="button" id="query" class="btn btn-primary btn-lg" style="margin: 10px 0px 10px 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;提交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+
+    		</fieldset>
+		</form>
+			<p><span id='result'></span></p>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var date=new Date();
+				var day=('0'+date.getDate()).slice(-2);
+				var month=('0'+(date.getMonth()+1)).slice(-2);
+				var dateString=date.getFullYear()+"-"+(month)+"-"+(day);
+
+				$.post("/tableAll/", {csrfmiddlewaretoken:$('[name="csrfmiddlewaretoken"]').val()},function(ret){
+						console.log(dateString);
+						document.getElementById('sdate').value=(dateString);
+						document.getElementById('tdate').value=(dateString);
+
+        				$('#result').html(ret);
+        		})
+			});
+			$("#query").click(function(){
+    	    	var title = $("#title").val();
+ 		    	var sdate = $("#sdate").val();
+ 		    	var tdate = $("#tdate").val(); 
+ 		    	var type = [];
+ 		    	var order = $("input[name='time']:checked").val();
+ 		    	$("input[name='type']:checked").each(function(i){type.push($(this).val())});
+        		$.ajax({
+					url:"/table/",
+					type:"get",
+					traditional:true,
+					data:{
+						'title':title,
+						'sdate':sdate,
+						'tdate':tdate,
+						'type':type,
+						'order':order,
+					},
+					success:function(ret){
+						$('#result').html(ret);
+						$("#sdate").val()=sdate;
+						$("#tdate").val()=tdate;
+						console.log("success");
+					},
+					error:function(ret,errorInfo,errorObj){
+						alert("哎呀！出错辽QAQ");
+						console.log(errorInfo);
+						console.log(errorObj);
+					}
+				});
+      		});
+		</script>
+	</body>
+</html>
